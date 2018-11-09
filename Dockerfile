@@ -1,17 +1,15 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
-RUN apt-get -y update && apt-get -y upgrade && \
-			apt-get -y install postfix && \
-			apt-get -y install dovecot-core dovecot-imapd dovecot-pop3d && \
-			apt-get -y install telnet vim
+RUN apt-get -y update && \
+			apt-get -y install postfix mailutils && \
+			apt-get -y install dovecot-imapd dovecot-pop3d && \
+			apt-get -y install telnet vim && \
+			apt-get -y install openssl && \
+			apt-get -y upgrade
 
+COPY setup.sh /opt/setup.sh
 
-COPY main.cf /etc/postfix/main.cf
-RUN service postfix start
+RUN chmod +x /opt/setup.sh
 
-COPY dovecot.conf /etc/dovecot/dovecot.conf
-COPY 10-auth.conf /etc/dovecot/conf.d/10-auth.conf
-COPY 10-mail.conf /etc/dovecot/conf.d/10-mail.conf
-COPY 10-master.conf /etc/dovecot/conf.d/10-master.conf
+CMD /opt/setup.sh
 
-#RUN service dovecot start
